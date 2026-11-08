@@ -1,0 +1,32 @@
+name: Build Minecraft Spotify Lyrics
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Extract ZIP
+        run: |
+          unzip Minecraft-Spotify-Lyrics-1.1.0.zip
+          find . -name gradlew -exec chmod +x {} \;
+
+      - name: Build
+        run: |
+          cd Minecraft-Spotify-Lyrics-1.1.0
+          ./gradlew build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PaoSpotifyLyrics-JAR
+          path: '**/build/libs/*.jar'
